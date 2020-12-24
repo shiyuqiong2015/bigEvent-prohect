@@ -10,7 +10,7 @@
   <link rel="stylesheet" href="./css/reset.css">
   <link rel="stylesheet" href="./css/iconfont.css">
   <link rel="stylesheet" href="./css/main.css">
-  <script src="./libs/jquery/jquery.min.js"></script>
+
 </head>
 
 <body>
@@ -41,7 +41,7 @@
               <a href="javascript:void(0);;" class="btn btn-warning btn-xs">拒绝</a>
               <a href="javascript:void(0);;" class="btn btn-danger btn-xs">删除</a>
             </td>
-          </tr>          
+          </tr>
           <tr class="danger">
             <td>中周</td>
             <td>How are you?</td>
@@ -53,7 +53,7 @@
               <a href="javascript:void(0);;" class="btn btn-danger btn-xs">删除</a>
             </td>
           </tr>
-         
+
           <tr>
             <td>武秀英</td>
             <td>外影广条同取水权科速工与。矿身面却属次养导务作者用品油调。高石期品极放存斗一号口消别共去。</td>
@@ -64,7 +64,7 @@
               <a href="javascript:void(0);;" class="btn btn-danger btn-xs">删除</a>
             </td>
           </tr>
-          
+
         </tbody>
       </table>
       <div class="row text-center">
@@ -86,6 +86,19 @@
 
     </div>
   </div>
+  <script src="./libs/jquery/jquery.min.js"></script>
+  <script src="./js/http.js"></script>
+
+  <script>
+    $(function () {
+      myAjax('GET', '/admin/comment/search', null, function (resData) {
+
+        console.log(resData);
+      })
+
+    })
+
+  </script>
 </body>
 
 </html>
