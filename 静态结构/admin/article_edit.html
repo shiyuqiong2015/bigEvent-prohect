@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -11,8 +10,12 @@
     <link rel="stylesheet" href="./css/reset.css">
     <link rel="stylesheet" href="./css/iconfont.css">
     <link rel="stylesheet" href="./css/main.css">
+    <link rel="stylesheet" href="./libs/layui/css/layui.css">
     <!-- jq -->
     <script src="./libs/jquery/jquery.min.js"></script>
+    <script src="./libs/layui/layui.js"></script>
+    <script src="./libs/tinymce_5.5.1/tinymce.min.js"></script>
+    <script src="./js/http.js"></script>
 </head>
 
 <body>
@@ -46,7 +49,7 @@
                 <div class="form-group">
                     <label class="col-sm-2 control-label">发布时间：</label>
                     <div class="col-sm-4">
-                        <input id="articleDate" name='date' class="jeinput" type="text" placeholder="请选择发布日期"  readonly>
+                        <input id="articleDate" name='date' class="jeinput" type="text" placeholder="请选择发布日期" readonly>
                     </div>
                 </div>
                 <div class="form-group">
@@ -58,12 +61,141 @@
                 </div>
                 <div class="form-group">
                     <div class="col-sm-offset-2 col-sm-10">
-                        <button type="submit" class="btn btn-success btn-edit" onclick="return saveArticle('已发布')">修改</button>
-                        <button type="submit" class="btn btn-default btn-draft" onclick="return saveArticle('草稿')">存为草稿</button>
+                        <button id="edit_public" type="submit" class="btn btn-success btn-edit">修改</button>
+                        <button id="edit_draft" type="submit" class="btn btn-default btn-draft">存为草稿</button>
                     </div>
                 </div>
             </form>
         </div>
     </div>
+    <script src="./libs/art-template/template-web.js"></script>
+    <script id="article_cate_tmp" type="text/html">
+        {{each data}}
+        <option value="{{$value.id}}">{{$value.name}}</option>
+        {{/each}}
+
+    </script>
+    <script>
+        $(function () {
+            // get_params();
+            get_date_init();
+            get_richtextarea_init();
+            get_cate_list();
+            $('#edit_public').click(function (e) {
+                e.preventDefault();
+                edit_article('已发布')
+
+            })
+            $('#edit_draft').click(function (e) {
+                e.preventDefault()
+                edit_article('')
+            })
+        })
+
+        //需求2.初始化编辑页面的结构和数据：富文本编辑器，日历控件，请求获取渲染文章分类
+        // 2.1初始化日历控件 layui
+        function get_date_init() {
+            layui.use('laydate', function () {
+                var laydate = layui.laydate;
+
+                //执行一个laydate实例
+                laydate.render({
+                    elem: '#articleDate' //指定元素
+                });
+            });
+        }
+        // 2.2初始化富文本编辑器   timny插件
+        function get_richtextarea_init() {
+            tinymce.init({
+                selector: '#articleContent',
+                language: 'zh_CN'
+            });
+        }
+        // 2.3请求获取渲染文章分类  发送ajax请求之前先引入http.js
+        function get_cate_list() {
+            myAjax('GET', '/admin/category/list', null, function (resData) {
+                // console.log(resData);
+                //需要将获取回来的数据渲染到文章分类下拉框中，此时需要引入art-template.js
+                let cateHtml = template('article_cate_tmp', resData);
+                $('#category').html(cateHtml)
+                setTimeout(() => {
+                    get_article_info()
+                }, 100)
+            })
+        }
+        //需求3.根据id值请求文章的数据，并且赋值给页面上指定的元素
+        function get_article_info() {
+            let aid = get_params();
+            // console.log(aid); //225
+            myAjax('GET', '/admin/article/search', {
+                id: aid
+            }, function (resData) {
+                // console.log(resData);
+                //4.将获取回来的数据赋值到页面指定的元素上
+                let data = resData.data;
+                $('#inputTitle').val(data.title);
+                $('.article_cover').attr('src', data.cover);
+                $('#category').val(data.categoryId);
+                $('#articleDate').val(data.date);
+                //富文本编辑器设置内容，参考富文本编辑器文档中的DEMO，一些技巧
+                tinyMCE.editors['articleContent'].setContent(data.content);
+            })
+        }
+        //需求4.当用户重新选择图片的时候，需要重新获取图片的src
+        function changeCoverImage() {
+            let file = document.querySelector('#inputCover').files[0];
+            let coverPath = URL.createObjectURL(file);
+            $('#article_cover').attr('src', coverPath);
+
+
+        }
+        //需求5.当用户点击修改按钮以后，获取到用户更改后的数据，重新发起ajax请求，更新服务器上的数据，并且跳转至文章列表页面
+        function edit_article(type) {
+            //重新获取用户修改后的数据，保存到formData中
+            let title = $('#inputTitle').val();
+            let cover = $('#article_cover').attr('src');
+            let categoryId = $('#category').val();
+            let date = $('#articleDate').val();
+            let content = tinyMCE.editors['articleContent'].getContent();
+            let state = type;
+            let sid = get_params();
+            //测试是否获取到数据
+            // console.log(title);
+            // console.log(cover);
+            // console.log(categoryId);
+            // console.log(date);
+            // console.log(content);
+            // console.log(state);
+            // console.log(id);
+            let formData = new FormData();
+            formData.append('id', sid);
+            formData.append('title', title);
+            formData.append('cover', cover);
+            formData.append('categoryId', categoryId);
+            formData.append('date', date);
+            formData.append('content', content);
+            formData.append('state', state);
+            //发起ajax请求编辑接口，更新后台数据
+            myAjax('POST', '/admin/article/edit', formData, function (resData) {
+                // console.log(resData);
+                if (resData.code !== 200) return alert(resData.msg);
+                window.location = './article_list.html'
+            })
+
+        }
+
+
+        //需求1.获取当前页面对应的文章的id值
+        function get_params() {
+            let urlParams = window.location.search.slice(1);
+            // console.log(urlParams); id=225
+            let urlArr = urlParams.split('=');
+            let pid = urlArr[1];
+            // console.log(pid); //225
+            return pid;
+        }
+
+    </script>
 </body>
+
 </html>

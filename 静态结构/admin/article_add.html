@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -11,8 +10,10 @@
     <link rel="stylesheet" href="./css/reset.css">
     <link rel="stylesheet" href="./css/iconfont.css">
     <link rel="stylesheet" href="./css/main.css">
+    <link rel="stylesheet" href="./libs/layui/css/layui.css">
     <!-- jq -->
     <script src="./libs/jquery/jquery.min.js"></script>
+    <script src="./libs/layui/layui.js"></script>
 </head>
 
 <body>
@@ -46,7 +47,7 @@
                 <div class="form-group">
                     <label class="col-sm-2 control-label">发布时间：</label>
                     <div class="col-sm-4">
-                        <input id="articleDate" name='date' class="jeinput" type="text" placeholder="请选择发布日期"  readonly>
+                        <input id="articleDate" name='date' class="jeinput" type="text" placeholder="请选择发布日期" readonly>
                     </div>
                 </div>
                 <div class="form-group">
@@ -58,12 +59,119 @@
                 </div>
                 <div class="form-group">
                     <div class="col-sm-offset-2 col-sm-10">
-                        <button type="submit" class="btn btn-success btn-edit" onclick="return saveArticle('已发布')">修改</button>
-                        <button type="submit" class="btn btn-default btn-draft" onclick="return saveArticle('草稿')">存为草稿</button>
+                        <button id='article_public_btn' type="submit" class="btn btn-success btn-edit">发布</button>
+                        <button id='article_draft_btn' type="submit" class="btn btn-default btn-draft">存为草稿</button>
                     </div>
                 </div>
             </form>
         </div>
     </div>
+    <script src="./js/http.js"></script>
+    <!-- 引入art-template模板.js -->
+    <script src="./libs/art-template/template-web.js"></script>
+    <script id="cate_list" type="text/html">
+        {{each data}}
+        <option value="{{$value.id}}">{{$value.name}}</option>
+        {{/each}}
+
+    </script>
+    <script src="./libs/tinymce_5.5.1/tinymce.min.js"></script>
+    <script>
+        $(function () {
+            get_cate_list();
+            get_date();
+
+
+            use_rich_textarea();
+            $('#article_public_btn').click(function (e) {
+                //阻止form表单的默认提交行为
+                e.preventDefault();
+                article_public('已发布')
+            })
+            $('#article_draft_btn').click(function (e) {
+                //阻止form表单的默认提交行为
+                e.preventDefault();
+                article_public('草稿')
+            })
+        })
+        //需求1.当页面加载的时候，获取文章类别，并且渲染到文章类别下拉框中
+        function get_cate_list() {
+            myAjax('GET', '/admin/category/list', null, function (resData) {
+                console.log(resData);
+                let cateHtml = template('cate_list', resData);
+                $('#category').html(cateHtml)
+            })
+        }
+        //需求2.给发布时间下拉框增加日历控件，使用了layui日期控件
+        function get_date() {
+            layui.use('laydate', function () {
+                var laydate = layui.laydate;
+
+                //执行一个laydate实例
+                laydate.render({
+                    elem: '#articleDate' //指定元素
+                });
+            });
+        }
+
+        //需求3.使用富文本编辑器
+        function use_rich_textarea() {
+            tinymce.init({
+                selector: '#articleContent',
+                language: 'zh_CN'
+            });
+            // var cnt = tinyMCE.editors[articleContent].getContent();
+            // console.log(cnt);
+            // alert(cnt);
+
+        }
+
+        // 需求4.实现上传图片前的本地预览
+        function changeCoverImage() {
+            let file = document.querySelector('#inputCover').files[0];
+            // $('#inputCover')
+            let filePath = URL.createObjectURL(file);
+            $('.article_cover').attr('src', filePath)
+        }
+
+        //需求5.当点击发布按钮的时候，获取到form表单中数据，提交到后台，并且成功后跳转回文章列表页面
+        function article_public(type) {
+            let title = $('#inputTitle').val();
+            let cover = document.querySelector('#inputCover').files[0];
+            let categoryId = $('#category').val();
+            let date = $('#articleDate').val();
+            let content = tinyMCE.editors['articleContent'].getContent();
+            let state = type;
+
+            let formData = new FormData();
+            formData.append('title', title);
+            formData.append('cover', cover);
+            formData.append('categoryId', categoryId);
+            formData.append('date', date);
+            formData.append('content', content);
+            formData.append('state', state);
+            // 确认是否成功获取到数据
+            // console.log(title);
+            // console.log(cover);
+            // console.log(categoryId);
+            // console.log(date);
+            // console.log(content);
+            // console.log(state);
+            //获取form表单中的数据
+            myAjax('POST', '/admin/article/publish', formData, function (resData) {
+                // console.log(resData);
+                if (resData.code !== 200) return alert(resData.msg);
+
+                $('.level02 li', parent.document).eq(0).addClass('active').siblings().removeClass('active')
+
+
+                window.location = './article_list.html';
+
+            })
+
+        }
+
+    </script>
 </body>
+
 </html>
