@@ -1,0 +1,476 @@
+.w {
+  width: 1020px;
+  margin: 0 auto;
+  color: pink;
+  color: #666;
+  font-family: 'Microsoft YaHei';
+}
+input,
+button {
+  border: none;
+  outline: none;
+}
+header {
+  height: 85px;
+}
+header .header_main {
+  position: relative;
+}
+header .header_main .logo {
+  display: inline-block;
+  width: 148px;
+  height: 61px;
+  position: absolute;
+  top: 10px;
+}
+header .header_main .logo > img {
+  width: 100%;
+  height: 100%;
+}
+header .header_main .serch_box {
+  position: absolute;
+  top: 20px;
+  left: 300px;
+  width: 390px;
+  height: 33px;
+  border: 1px solid #00a4ff;
+  display: flex;
+  justify-content: space-between;
+}
+header .header_main .serch_box .search_txt {
+  flex: 1;
+  text-indent: 10px;
+}
+header .header_main .serch_box .search_btn {
+  width: 46px;
+  height: 100%;
+  background-color: #00a4ff;
+  color: #fff;
+}
+header .header_main .serch_box .search_btn > i {
+  font-size: 20px;
+}
+header .header_main .web_help_entrance {
+  position: absolute;
+  top: 20px;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+}
+header .header_main .web_help_entrance > a {
+  color: #666666;
+  font-size: 14px;
+  font-family: 'simsun';
+}
+header .header_main .web_help_entrance > a:hover {
+  color: #00a4ff;
+}
+.nav_banner {
+  height: 50px;
+  background-color: #2a2a2a;
+  margin-bottom: 20px;
+}
+.nav_banner .nav_banner_main {
+  position: relative;
+}
+.nav_banner .nav_banner_main .total_menu {
+  float: left;
+  width: 120px;
+  line-height: 50px;
+  font-weight: 700;
+  color: #fff;
+  font-size: 14px;
+  text-align: center;
+  position: relative;
+}
+.nav_banner .nav_banner_main .total_menu .tool_bar {
+  position: absolute;
+  top: 50px;
+  width: 100%;
+  display: none;
+  z-index: 999;
+}
+.nav_banner .nav_banner_main .total_menu .tool_bar > li:nth-of-type(n+2) {
+  width: 100%;
+  height: 45px;
+  background-color: #2a2a2a;
+  line-height: 45px;
+  text-align: left;
+  text-indent: 10px;
+  border-bottom: 1px solid #505050;
+  z-index: 9;
+}
+.nav_banner .nav_banner_main .total_menu .tool_bar > li:nth-of-type(n+2) > a {
+  color: #fff;
+}
+.nav_banner .nav_banner_main .total_menu .tool_bar > li:nth-of-type(n+2):nth-of-type(2) {
+  border-radius: 5px 5px 0 0;
+}
+.nav_banner .nav_banner_main .total_menu .tool_bar > li:nth-of-type(n+2):nth-last-of-type(1) {
+  border-radius: 0 0 5px 5px;
+}
+.nav_banner .nav_banner_main .total_menu .tool_bar > li:nth-of-type(n+2):hover {
+  background-color: #0074f3;
+}
+.nav_banner .nav_banner_main .total_menu .tool_bar li.up {
+  width: 100%;
+  height: 13px;
+  background-color: #fff;
+  position: relative;
+  overflow: hidden;
+}
+.nav_banner .nav_banner_main .total_menu .tool_bar li.up span {
+  position: absolute;
+  top: 5px;
+  left: 50%;
+  display: block;
+  width: 15px;
+  height: 15px;
+  background-color: #2a2a2a;
+  transform: translateX(-50%) rotate(-45deg);
+}
+.nav_banner .nav_banner_main .total_menu:nth-of-type(n+1):hover {
+  background-color: #0074f3;
+}
+.nav_banner .nav_banner_main .total_menu:nth-of-type(n+1):hover .tool_bar {
+  display: block;
+}
+.nav_banner .nav_banner_main .menu_list {
+  float: left;
+  display: flex;
+}
+.nav_banner .nav_banner_main .menu_list li {
+  line-height: 50px;
+  padding: 0 20px;
+}
+.nav_banner .nav_banner_main .menu_list li > a {
+  color: #fff;
+  font-size: 14px;
+}
+.nav_banner .nav_banner_main .menu_list li:hover {
+  background-color: #0074f3;
+}
+.nav_banner .nav_banner_main .special_work {
+  float: right;
+  display: flex;
+}
+.nav_banner .nav_banner_main .special_work li {
+  line-height: 50px;
+  padding: 0 20px;
+}
+.nav_banner .nav_banner_main .special_work li > a {
+  color: #fff;
+  font-size: 14px;
+}
+.nav_banner .nav_banner_main .special_work li:hover {
+  background-color: #0074f3;
+}
+.content_box {
+  box-sizing: border-box;
+}
+.content_box .content_right {
+  float: right;
+  width: 250px;
+}
+.content_box .content_right .hot {
+  border: 1px solid #eeeeee;
+  margin-bottom: 20px;
+}
+.content_box .content_right .hot .hot_title {
+  height: 30px;
+  line-height: 30px;
+  background-color: #ddd;
+}
+.content_box .content_right .hot .hot_title > i {
+  color: #00a4ff;
+  margin: 0 20px;
+}
+.content_box .content_right .hot .hot_title > span {
+  font-weight: 700;
+}
+.content_box .content_right .hot .hot_list {
+  padding: 0 20px;
+}
+.content_box .content_right .hot .hot_list > li {
+  height: 30px;
+  line-height: 30px;
+  border-bottom: 1px dashed #ccc;
+  position: relative;
+}
+.content_box .content_right .hot .hot_list > li:nth-last-of-type(1) {
+  border-bottom: none;
+}
+.content_box .content_right .hot .hot_list > li > i {
+  position: absolute;
+  top: 5px;
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  line-height: 20px;
+  text-align: center;
+  font-style: normal;
+  margin-right: 10px;
+  background-color: pink;
+}
+.content_box .content_right .hot .hot_list > li > a {
+  position: absolute;
+  left: 30px;
+  display: inline-block;
+  width: 170px;
+  height: 30px;
+  line-height: 30px;
+  font-size: 10px;
+  color: #666;
+  /* 1. 文字显示不开，是否开启换行   nowrap：不换行*/
+  white-space: nowrap;
+  /* 2. 超出的隐藏 */
+  overflow: hidden;
+  /* 3. 文字溢出的时候，用省略号显示 */
+  text-overflow: ellipsis;
+}
+.content_box .content_right .latest_comment {
+  border: 1px solid #eee;
+  margin-bottom: 20px;
+}
+.content_box .content_right .latest_comment .latest_comment_title {
+  height: 30px;
+  line-height: 30px;
+  background-color: #ddd;
+}
+.content_box .content_right .latest_comment .latest_comment_title > i {
+  color: #00a4ff;
+  margin: 0 20px;
+}
+.content_box .content_right .latest_comment .latest_comment_title > span {
+  font-weight: 700;
+}
+.content_box .content_right .latest_comment .latest_comment_list {
+  padding: 0 20px;
+}
+.content_box .content_right .latest_comment .latest_comment_list li {
+  height: 60px;
+  border-bottom: 1px dashed #ccc;
+  position: relative;
+}
+.content_box .content_right .latest_comment .latest_comment_list li:nth-last-of-type(1) {
+  border-bottom: none;
+}
+.content_box .content_right .latest_comment .latest_comment_list li > i {
+  position: absolute;
+  top: 10px;
+  width: 36px;
+  height: 36px;
+  line-height: 30px;
+  border-radius: 50%;
+  text-align: center;
+  font-style: normal;
+  margin-right: 10px;
+  background-color: #0a76b7;
+  color: #fff;
+}
+.content_box .content_right .latest_comment .latest_comment_list li .desc {
+  position: absolute;
+  top: 5px;
+  left: 40px;
+}
+.content_box .content_right .latest_comment .latest_comment_list li .desc > span {
+  font-size: 14px;
+  color: #000;
+  margin-right: 10px;
+}
+.content_box .content_right .latest_comment .latest_comment_list li .desc > a {
+  text-indent: 10px;
+  font-size: 12px;
+  color: #666;
+}
+.content_box .content_right .focus {
+  border: 1px solid #eeeeee;
+  margin-bottom: 20px;
+}
+.content_box .content_right .focus .focus_title {
+  height: 30px;
+  line-height: 30px;
+  background-color: #ddd;
+}
+.content_box .content_right .focus .focus_title > i {
+  color: #00a4ff;
+  margin: 0 20px;
+}
+.content_box .content_right .focus .focus_title > span {
+  font-weight: 700;
+}
+.content_box .content_right .focus .focus_list {
+  padding: 0 20px;
+}
+.content_box .content_right .focus .focus_list > li {
+  height: 30px;
+  line-height: 30px;
+  border-bottom: 1px dashed #ccc;
+}
+.content_box .content_right .focus .focus_list > li:nth-last-of-type(1) {
+  border-bottom: none;
+}
+.content_box .content_right .focus .focus_list > li > a {
+  display: inline-block;
+  width: 200px;
+  height: 30px;
+  line-height: 30px;
+  font-size: 10px;
+  color: #666;
+  /* 1. 文字显示不开，是否开启换行   nowrap：不换行*/
+  white-space: nowrap;
+  /* 2. 超出的隐藏 */
+  overflow: hidden;
+  /* 3. 文字溢出的时候，用省略号显示 */
+  text-overflow: ellipsis;
+}
+.content_box .content_left {
+  margin-right: 10px;
+}
+.content_box .content_left .wraper {
+  width: 750px;
+  height: 278px;
+  margin-bottom: 20px;
+}
+.content_box .content_left .wraper .wraper_left {
+  float: left;
+  width: 400px;
+  height: 278px;
+  margin-right: 10px;
+  position: relative;
+}
+.content_box .content_left .wraper .wraper_left > img {
+  width: 100%;
+  height: 100%;
+}
+.content_box .content_left .wraper .wraper_left > .desc_mask {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 24px;
+  background-color: rgba(0, 0, 0, 0.4);
+  text-align: center;
+  color: #fff;
+  /* 1. 文字显示不开，是否开启换行   nowrap：不换行*/
+  white-space: nowrap;
+  /* 2. 超出的隐藏 */
+  overflow: hidden;
+  /* 3. 文字溢出的时候，用省略号显示 */
+  text-overflow: ellipsis;
+}
+.content_box .content_left .wraper .wraper_right {
+  float: right;
+  width: 340px;
+  height: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-content: space-between;
+}
+.content_box .content_left .wraper .wraper_right > li {
+  width: 165px;
+  height: 134px;
+  position: relative;
+}
+.content_box .content_left .wraper .wraper_right > li > img {
+  width: 100%;
+  height: 100%;
+}
+.content_box .content_left .wraper .wraper_right > li > .desc_mask {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 24px;
+  background-color: rgba(0, 0, 0, 0.4);
+  text-align: center;
+  color: #fff;
+}
+.content_box .content_left .latest_news {
+  width: 750px;
+}
+.content_box .content_left .latest_news .latest_news_title {
+  border-bottom: 1px solid #eee;
+  height: 30px;
+}
+.content_box .content_left .latest_news .latest_news_title > h2 {
+  float: left;
+  font-size: 18px;
+  line-height: 30px;
+  padding: 0 10px;
+  color: #000;
+  border-bottom: 2px solid #0074f3;
+}
+.content_box .content_left .latest_news .latest_news_title > h2 > i {
+  color: #00a4ff;
+  margin-right: 5px;
+}
+.content_box .content_left .latest_news .latest_news_title > a {
+  float: right;
+  color: #666;
+  margin-right: 10px;
+}
+.content_box .content_left .latest_news .latest_news_title > a:hover {
+  color: #00a4ff;
+}
+.content_box .content_left .latest_news .latest_news_list li {
+  padding: 18px 0;
+  border-bottom: 1px solid #eee;
+  height: 135px;
+}
+.content_box .content_left .latest_news .latest_news_list li .article_cover {
+  float: left;
+  margin-right: 15px;
+  width: 180px;
+  height: 135px;
+}
+.content_box .content_left .latest_news .latest_news_list li .article_cover > img {
+  width: 100%;
+  height: 100%;
+}
+.content_box .content_left .latest_news .latest_news_list li .article_main > h2 {
+  font-size: 18px;
+  font-weight: 700;
+  color: #000;
+  margin-bottom: 10px;
+  /* 1. 文字显示不开，是否开启换行   nowrap：不换行*/
+  white-space: nowrap;
+  /* 2. 超出的隐藏 */
+  overflow: hidden;
+  /* 3. 文字溢出的时候，用省略号显示 */
+  text-overflow: ellipsis;
+}
+.content_box .content_left .latest_news .latest_news_list li .article_main > p {
+  font-size: 12px;
+  line-height: 20px;
+  color: #737373;
+}
+.content_box .content_left .latest_news .latest_news_list li .article_main .about {
+  margin-top: 10px;
+  height: 30px;
+  line-height: 30px;
+  font-size: 12px;
+  color: #737373;
+}
+.content_box .content_left .latest_news .latest_news_list li .article_main .about > .public {
+  float: right;
+}
+.content_box .content_left .latest_news .latest_news_list li .article_main .about span:nth-of-type(2) {
+  margin: 0 5px;
+}
+.content_box .content_left .latest_news .latest_news_list li .article_main .about span > i {
+  margin-right: 3px;
+}
+footer {
+  background-color: #262f38;
+  padding: 20px;
+  text-align: center;
+  font-size: 12px;
+  color: #fff;
+}
+footer > p {
+  line-height: 20px;
+}
+footer > p > i {
+  margin: 0 10px;
+  font-style: normal;
+}
