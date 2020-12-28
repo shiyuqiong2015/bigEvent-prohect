@@ -6,12 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>文章列表</title>
-    <link rel="stylesheet" href="./libs/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="./css/reset.css">
     <link rel="stylesheet" href="./css/iconfont.css">
     <link rel="stylesheet" href="./css/main.css">
-    <script src="./libs/jquery/jquery.min.js"></script>
-    <script src="./libs/bootstrap/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="./libs/bootstrap/css/bootstrap.css">
+    <link rel="stylesheet" href="./libs/layui/css/modules/layer/default/layer.css">
+
+
 </head>
 
 <body>
@@ -20,8 +21,9 @@
             文章类别管理
         </div>
         <div class="container-fluid common_con">
-            <div class="row" style="margin-top: 10px;">           
-                <div class="col-xs-offset-10 col-sm-offset-10 col-md-offset-10 col-lg-offset-10 col-xs-2 col-sm-2 col-md-2 col-lg-2">
+            <div class="row" style="margin-top: 10px;">
+                <div
+                    class="col-xs-offset-10 col-sm-offset-10 col-md-offset-10 col-lg-offset-10 col-xs-2 col-sm-2 col-md-2 col-lg-2">
                     <a href="javascript:void(0)" class="btn btn-success" id="xinzengfenlei" data-toggle="modal"
                         data-target="#myModal">新增分类</a>
                 </div>
@@ -34,7 +36,7 @@
                         <th class="text-center" width="100">操作</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody id="cateList">
                     <tr>
                         <td>爱生活</td>
                         <td>热爱生活</td>
@@ -76,15 +78,249 @@
                             <input type="text" class="form-control" id="slug" placeholder="分类别名">
                         </div>
                         <div class="modal-footer">
-                            <button type="button" data-dismiss="modal" class="btn btn-default" >取消</button>
-                            <button type="button" class="btn btn-primary btn_opt" >保存</button>
+                            <button type="button" data-dismiss="modal" class="btn btn-default">取消</button>
+                            <button type="button" class="btn btn-primary btn_opt"
+                                onclick='add_category_type()'>保存</button>
                         </div>
                     </div>
                 </div>
-              
+
             </div>
         </div>
 
     </div>
+    <!-- 编辑分类布局区域 -->
+    <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">编辑分类</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="add_category">
+                        <div class="form-group">
+                            <label for="name">分类名</label>
+                            <input type="text" class="form-control" id="edit_name" placeholder="分类名">
+                        </div>
+                        <div class="form-group">
+                            <label for="slug">分类别名</label>
+                            <input type="text" class="form-control" id="edit_slug" placeholder="分类别名">
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" data-dismiss="modal" class="btn btn-default">取消</button>
+                            <button type="button" class="btn btn-primary btn_opt"
+                                onclick='edit_category_type()'>保存</button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+    <script src="./libs/jquery/jquery.min.js"></script>
+    <script src="./libs/art-template/template-web.js"></script>
+    <script src="./libs/bootstrap/js/bootstrap.min.js"></script>
+    <script src="./libs/layui/lay/modules/layer.js"></script>
+    <script id="article_type_temp" type="text/html">
+        {{each data}}
+        <tr>
+            <td>{{$value.name}}</td>
+            <td>{{$value.slug}}</td>
+            <td class="text-center">
+                <a href="javascript:;" data-toggle="modal" class=" btn btn-info btn-xs"
+                    onclick=edit_article_type({{$value.id}})>编辑</a>
+                <a href="javascript:;" class="btn btn-danger btn-xs" onclick=del_article_type({{$value.id}})>删除</a>
+            </td>
+        </tr>
+        {{/each}}
+
+    </script>
+    <script>
+        $(function () {
+            get_article_type();
+
+        })
+        //需求1.文章类别管理获取文章数据
+        function get_article_type() {
+            //1.创建异步对象
+            let xhr = new XMLHttpRequest();
+            // 2.设置请求方式和请求url地址,get拼接参数
+            xhr.open('GET', 'http://localhost:8080/api/v1/admin/category/list')
+            xhr.setRequestHeader('Authorization', localStorage.getItem('bigEvent_token'));
+            // 3.发送请求
+            xhr.send()
+            // 4.接收请求回来的参数
+            xhr.onload = function () {
+                //返回来的数据是json字符串，需要将它转为对象格式
+
+
+                // console.log(xhr.responseText);
+                let resString = xhr.responseText;
+                let resData = JSON.parse(resString);
+                // console.log(resData);
+                //转为对象格式后，调用模板字符串，渲染到页面上
+                let resHtml = template('article_type_temp', resData);
+                $('#cateList').html(resHtml)
+            }
+        }
+        //需求2.新增文章类别
+        function add_category_type() {
+            // let e = window.event;
+            // //没有包含在form表单里面需要组织表单的默认提交行为？？？
+            // e.preventDefault();
+            //获取用户输入的新增类别数据，发起ajax请求
+            let uname = $('#name').val();
+            let uslug = $('#slug').val();
+            // console.log(uname, uslug);
+            //1.创建异步对象
+            let xhr = new XMLHttpRequest();
+
+            // 2.设置请求方式和请求地址
+            xhr.open('POST', 'http://localhost:8080/api/v1/admin/category/add');
+
+            //post方法设置请求头
+            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            xhr.setRequestHeader('Authorization', localStorage.getItem('bigEvent_token'));
+
+            //拼接参数
+            let params = {};
+            params.name = uname;
+            params.slug = uslug;
+            params.id = uslug;
+            let paramsArr = [];
+            let paramsStr = '';
+            // 循环遍历对象，拼接参数
+            for (let key in params) {
+                paramsArr.push(`${key}=${params[key]}`)
+            }
+            paramsStr = paramsArr.join('&');
+            // console.log(paramsStr);
+            // 3.发送请求
+            xhr.send(paramsStr);
+            // 4.接收请求
+            xhr.onload = function () {
+                let resString = xhr.responseText;
+                let resData = JSON.parse(resString);
+                // console.log(resData);
+                //创建成功以后，更新数据列表，关闭模态框
+                get_article_type();
+                $('#myModal').modal('hide')
+                $('#name').val('');
+                $('#slug').val('');
+            }
+        }
+        //需求3.删除文章类别
+        function del_article_type(c_id) {
+            console.log(c_id);
+            //当点击按钮的时候，弹窗提示用户是否确认删除，如果确认，则获取到指定文章的id，发起ajax请求；
+            layer.confirm('确认删除该数据？', {
+                icon: 3,
+                title: '注意'
+            }, function (index) {
+                layer.close(index);
+                //创建异步对象
+                let xhr = new XMLHttpRequest();
+
+                //设置请求方式和请求地址
+                xhr.open('POST', 'http://localhost:8080/api/v1/admin/category/delete');
+                //拼接参数；
+
+                // let params = {
+                //     id: c_id
+                // };
+                let params = 'id=' + c_id;
+                console.log(params);
+                //post请求要设置请求头和token
+                xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+                xhr.setRequestHeader('Authorization', localStorage.getItem('bigEvent_token'));
+                //发送ajax请求
+                xhr.send(params);
+                //接收返回来的参数
+                xhr.onload = function () {
+                    let resString = xhr.responseText;
+                    let resData = JSON.parse(resString);
+                    // console.log(resData);
+                    get_article_type()
+                }
+            });
+        }
+        let params_id = 0;
+        //需求4.根据id获取到指定的数据，并且展示在页面上
+        function edit_article_type(sid) {
+            params_id = sid;
+            //当用户点击的时候，打开模态窗口
+            $('#editModal').modal('show');
+            //根据id获取到对应的数据，并且展示在页面上
+            // console.log(sid);
+            //创建异步对象
+            let xhr = new XMLHttpRequest();
+            //拼接参数
+            let params = '?id=' + sid;
+            let url = 'http://localhost:8080/api/v1/admin/category/search' + params;
+            //设置请求方式和请求路径
+            xhr.open('GET', url);
+            //后台管理系统要求每次请求都要带上token
+            xhr.setRequestHeader('Authorization', localStorage.getItem('bigEvent_token'));
+            //发送请求
+            xhr.send();
+            //接收响应回来的数据
+            xhr.onload = function () {
+                let resString = xhr.responseText;
+                let resData = JSON.parse(resString);
+                // console.log(resData);
+                $('#editModal #edit_name').val(resData.data[0].name)
+                $('#editModal #edit_slug').val(resData.data[0].slug)
+            }
+
+
+        }
+        //需求5.当用户点击编辑保存按钮的时候；
+        // 获取到用户修改后的数据，拼接参数，重新发起ajax请求，
+        function edit_category_type() {
+            console.log(params_id);
+            let paramsObj = {
+                id: params_id,
+                name: $('#edit_name').val(),
+                slug: $('#edit_slug').val(),
+            };
+
+            let paramsArr = [];
+            let paramsStr = '';
+            //循环遍历对象，拼接参数
+            for (let key in paramsObj) {
+                paramsArr.push(`${key}=${paramsObj[key]}`)
+            }
+            paramsStr = paramsArr.join('&');
+            // console.log(paramsStr);
+
+            //1.创建异步对象
+            let xhr = new XMLHttpRequest();
+            //2.设置请求方式和请求路径
+            xhr.open('POST', 'http://localhost:8080/api/v1/admin/category/edit');
+            //post请求要设置请求头
+            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            //后台管理要求每次请求都要带上token
+            xhr.setRequestHeader('Authorization', localStorage.getItem('bigEvent_token'));
+            //3.发送请求
+            xhr.send(paramsStr);
+            // 4.接收响应回来的数据
+            xhr.onload = function () {
+                let resString = xhr.responseText;
+                let resData = JSON.parse(resString);
+                console.log(resData);
+                //请求成功以后，刷新页面，关闭模态框
+                get_article_type();
+                $('#editModal').modal('hide');
+                $('#edit_name').val('');
+                $('#edit_slug').val('')
+            }
+        }
+
+    </script>
+
+    <body>
 
 </html>

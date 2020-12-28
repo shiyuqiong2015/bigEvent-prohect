@@ -61,22 +61,28 @@
     <script src="./libs/jquery/jquery.min.js"></script>
     <!-- 导入bootstrap的js文件 -->
     <script src="./libs/bootstrap/js/bootstrap.min.js"></script>
+
     <script>
-        //侧边栏的背景颜色和字体颜色的样式切换
-        $('.menu .level01,.menu .level02 li').click(function () {
-            $('.menu .level01,.menu .level02 li').removeClass('active');
-            $(this).addClass('active');
+        $(function () {
+            get_nav_bar_style_change();
         })
-        //文章管理二级菜单的展开和隐藏，以及箭头的旋转
+        //1.侧边栏的背景颜色和字体颜色的样式切换
+        function get_nav_bar_style_change() {
 
-        $('.level01.l2').click(function () {
+            $('.menu .level01,.menu .level02 li').click(function () {
+                $('.menu .level01,.menu .level02 li').removeClass('active');
+                $(this).addClass('active');
+            })
+            //文章管理二级菜单的展开和隐藏，以及箭头的旋转
+
+            $('.level01.l2').click(function () {
 
 
-            $('.level02').slideToggle();
-            $('.menu .level01 b').toggleClass('rotate0')
+                $('.level02').slideToggle();
+                $('.menu .level01 b').toggleClass('rotate0')
 
-
-        })
+            })
+        }
 
     </script>
 </body>
