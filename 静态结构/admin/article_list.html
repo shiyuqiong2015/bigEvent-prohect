@@ -90,8 +90,11 @@
             <td class="text-center">{{$value.date}}</td>
             <td class="text-center">{{$value.state}}</td>
             <td class="text-center">
+
+
                 <a href="article_edit.html?id={{$value.id}}" class="btn btn-default btn-xs">编辑</a>
-                <a href="javascript:;" class="btn btn-danger btn-xs delete" onclick="del_info({{$value.id}})">删除</a>
+                <a href="javascript:void(0);" class="btn btn-danger btn-xs delete"
+                    onclick="del_info({{$value.id}})">删除</a>
             </td>
         </tr>
         {{/each}}

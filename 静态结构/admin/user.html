@@ -44,7 +44,8 @@
                     <label for="inputPassword3" class="col-sm-2 control-label">用户图标：</label>
                     <div class="col-sm-10">
                         <img src="images/2.jpg" alt="" class="user_pic">
-                        <input style="display: block" name="userPic" type="file" id="exampleInputFile">
+                        <input style="display: block" name="userPic" type="file" id="exampleInputFile"
+                            onchange="get_userImg_preshow()">
                     </div>
                 </div>
 
@@ -57,11 +58,83 @@
                 </div>
                 <div class="form-group">
                     <div class="col-sm-offset-2 col-sm-10">
-                        <button type="submit" class="btn btn-success btn-edit">修改</button>
+                        <button type="submit" class="btn btn-success btn-edit" onclick='edit_user_info()'>修改</button>
                     </div>
                 </div>
             </form>
         </div>
     </div>
+    <script>
+        $(function () {
+            show_user_old_info();
+        })
+        //需求1.当页面加载时候，获取到服务器中用户的数据，并且展示在页面上
+        function show_user_old_info() {
+            //创建异步对象
+            let xhr = new XMLHttpRequest();
+            //设置请求方式和请求url
+            xhr.open('GET', 'http://localhost:8080/api/v1/admin/user/detail');
+            //带上token
+            xhr.setRequestHeader('Authorization', localStorage.getItem('bigEvent_token'));
+            //发送请求
+            xhr.send();
+            //接收并响应接收回来的数据
+            xhr.onload = function () {
+                let resString = xhr.responseText;
+                let resData = JSON.parse(resString);
+                // console.log(resData);
+                //将数据展示在页面上
+                $('#username').val(resData.data.username);
+                $('#nickname').val(resData.data.nickname);
+                $('#email').val(resData.data.email);
+                $('.user_pic').attr('src', resData.data.userPic);
+                $('#password').val(resData.data.password);
+            }
+
+        }
+
+        //需求2.当用户点击修改按钮的时候，获取更新后的数据，发送给后台服务器，并更新主页中导航菜单的数据
+        function edit_user_info() {
+            //获取事件对象，阻止表单的默认提交行为
+            let e = window.event;
+            e.preventDefault()
+
+            //获取到更新后的数据，后台要求保存到formData中
+            let formData = new FormData();
+            formData.append('username', $('#username').val());
+            formData.append('nickname', $('#nickname').val());
+            formData.append('email', $('#email').val());
+            let file = document.querySelector('#exampleInputFile').files[0];
+            formData.append('userPic', file);
+            formData.append('password', $('#password').val());
+            //创建异步对象
+            let xhr = new XMLHttpRequest();
+            //设置请求方式和请求路径
+            xhr.open('POST', 'http://localhost:8080/api/v1/admin/user/edit');
+            //带上token
+            xhr.setRequestHeader('Authorization', localStorage.getItem('bigEvent_token'));
+            //发送请求
+            xhr.send(formData);
+            //接收并响应返回来的数据
+            xhr.onload = function () {
+                let resString = xhr.responseText;
+                let resData = JSON.parse(resString);
+                console.log(resData);
+                //数据修改成功以后，修改主页导航栏中用户的信息
+                window.parent.get_user_info();
+                // window.parent.location = './index.html'
+            }
+
+        }
+
+        //需求3.实现未上传图片的预览功能
+        function get_userImg_preshow() {
+            let file = document.querySelector('#exampleInputFile').files[0];
+            let filePath = URL.createObjectURL(file);
+            $('.user_pic').attr('src', filePath);
+        }
+
+    </script>
 </body>
+
 </html>

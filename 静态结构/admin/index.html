@@ -17,8 +17,8 @@
     <div class="sider">
         <a href="#" class="logo"><img src="./images/logo02.png" alt="logo"></a>
         <div class="user_info">
-            <img src="http://localhost:8080/icon.jpg" alt="person">
-            <span>欢迎&nbsp;&nbsp;李思思</span>
+            <img src="http://localhost:8080/icon.jpg" alt="person" id='userImg'>
+            <span>欢迎&nbsp;&nbsp; <i id="userName">李思思</i> </span>
             <b>管理员</b>
         </div>
         <!-- 左侧导航栏 -->
@@ -65,6 +65,7 @@
     <script>
         $(function () {
             get_nav_bar_style_change();
+            get_user_info()
         })
         //1.侧边栏的背景颜色和字体颜色的样式切换
         function get_nav_bar_style_change() {
@@ -82,6 +83,29 @@
                 $('.menu .level01 b').toggleClass('rotate0')
 
             })
+        }
+
+        //2.获取服务器中最新的用户信息，并显示在主页的导航菜单上
+        function get_user_info() {
+            //1.创建异步对象
+            let xhr = new XMLHttpRequest();
+            //2.设置请求方式和请求路径
+            xhr.open('GET', 'http://localhost:8080/api/v1/admin/user/info');
+            //3.带上token
+            xhr.setRequestHeader('Authorization', localStorage.getItem('bigEvent_token'));
+            //4.发送请求
+            xhr.send();
+            //5.接收并响应返回来的数据
+            xhr.onload = function () {
+                let resString = xhr.responseText;
+                let resData = JSON.parse(resString);
+                // console.log(resData);
+                //将获取到的数据展示在页面上
+                $('#userImg').attr('src', resData.data.userPic);
+                $('#userName').html(resData.data.nickname);
+
+
+            }
         }
 
     </script>

@@ -62,8 +62,16 @@
       <td>{{$value.date}} {{$value.time}}</td>
       <td>{{$value.state}}</td>
       <td class="text-center">
-        <a href="javascript:void(0);;" class="btn btn-info btn-xs">批准</a>
-        <a href="javascript:void(0);;" class="btn btn-danger btn-xs">删除</a>
+        {{if $value.state == '已拒绝'}}
+        <a href="javascript:void(0);" class="btn btn-success btn-xs" onclick='pass_comment({{$value.id}})'>批准</a>
+        {{else if $value.state == '待审核'}}
+        <a href="javascript:void(0);" class="btn btn-warning btn-xs" onclick='reject_comment({{$value.id}} )'>拒绝</a>
+        <a href="javascript:void(0);" class="btn btn-success btn-xs" onclick='pass_comment({{$value.id}})'>批准</a>
+        {{else if $value.state == '已通过'}}
+        <a href="javascript:void(0);" class="btn btn-warning btn-xs" onclick='reject_comment({{$value.id}})'>拒绝</a>
+        {{/if}}
+        <a href="javascript:void(0);" class="btn btn-danger btn-xs" onclick='del_comment({{$value.id}})'>删除</a>
+
       </td>
     </tr>
     {{/each}}
@@ -75,7 +83,7 @@
     })
     //需求1.当页面加载的时候，请求评论列表的数据，渲染至页面上
     function get_comment_list(current = 1, limit = 6) {
-      console.log(current, limit);
+      // console.log(current, limit);
       // 1.创建异步对象
       let xhr = new XMLHttpRequest();
       //拼接参数
@@ -90,7 +98,7 @@
         paramsArr.push(`${key}=${paramsObj[key]}`)
       }
       paramsStr = paramsArr.join('&');
-      console.log(paramsStr);
+      // console.log(paramsStr);
       let url = 'http://localhost:8080/api/v1/admin/comment/search' + '?' + paramsStr;
       // 2.设置请求方式和请求url
       xhr.open('GET', url);
@@ -136,6 +144,84 @@
 
         });
       });
+    }
+
+    //需求3.评论的拒绝
+    function reject_comment(p_id) {
+      //创建异步对象
+      let xhr = new XMLHttpRequest();
+      //设置请求方式和请求url地址
+      xhr.open('POST', 'http://localhost:8080/api/v1/admin/comment/reject');
+      //post请求要设置请求头
+      xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+      //后台管理要求每次请求都要带上token
+      xhr.setRequestHeader('Authorization', localStorage.getItem('bigEvent_token'));
+
+      //拼接参数
+      let params = 'id=' + p_id;
+      // console.log(params);
+      //发送请求
+      xhr.send(params);
+      //接收响应回来的数据
+      xhr.onload = function () {
+        let resString = xhr.responseText;
+        let resData = JSON.parse(resString);
+        // console.log(resData);
+        get_comment_list();
+      }
+    }
+
+    //需求4.评论的通过
+    function pass_comment(p_id) {
+      // console.log(p_id);
+      //获取到id以后，
+      //创建异步对象
+      let xhr = new XMLHttpRequest();
+      //设置请求方式和url地址
+      xhr.open('POST', 'http://localhost:8080/api/v1/admin/comment/pass');
+      //post请求要设置请求头
+      xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+      //后台管理要求每次请求都要带上token
+      xhr.setRequestHeader('Authorization', localStorage.getItem('bigEvent_token'));
+      //拼接参数
+      let params = 'id=' + p_id;
+      //发送请求
+      xhr.send(params);
+      //接收并响应返回来的数据
+      xhr.onload = function () {
+        let resString = xhr.responseText;
+        let resData = JSON.parse(resString);
+        // console.log(resData);
+        get_comment_list();
+      }
+
+    }
+
+    //需求5.删除评论
+    function del_comment(p_id) {
+      console.log(p_id);
+      //获取到id以后，
+      //创建异步对象
+      let xhr = new XMLHttpRequest();
+      //设置请求方式和url地址
+      xhr.open('POST', 'http://localhost:8080/api/v1/admin/comment/delete');
+      //post请求要设置请求头
+      xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+      //后台管理要求每次请求都要带上token
+      xhr.setRequestHeader('Authorization', localStorage.getItem('bigEvent_token'));
+      //拼接参数
+      let params = 'id=' + p_id;
+      //发送请求
+      xhr.send(params);
+      // console.log(params);
+      //接收并响应返回来的数据
+      xhr.onload = function () {
+        let resString = xhr.responseText;
+        let resData = JSON.parse(resString);
+        console.log(resData);
+        get_comment_list();
+      }
+
     }
 
   </script>
