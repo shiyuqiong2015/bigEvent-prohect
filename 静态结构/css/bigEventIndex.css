@@ -460,6 +460,9 @@ header .header_main .web_help_entrance > a:hover {
 .content_box .content_left .latest_news .latest_news_list li .article_main .about span > i {
   margin-right: 3px;
 }
+.content_box .content_left .latest_news #pagination {
+  text-align: center;
+}
 footer {
   background-color: #262f38;
   padding: 20px;

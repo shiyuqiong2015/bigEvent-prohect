@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>大事件-列表页</title>
+  <link rel="stylesheet" type="text/css" href="css/reset.css">
+  <link rel="stylesheet" href="css/font-awesome.min.css">
+  <link rel="stylesheet" type="text/css" href="css/main.css">
+  <link rel="stylesheet" href="./admin/libs/layui/css/layui.css">
+
+</head>
+
+<body>
+  <div class="header">
+    <a href="./bigEventIndex.html" class="logo fl"><img src="images/logo.png" alt="logo"></a>
+    <div class="search_form fl">
+      <input type="text" class="search_txt" placeholder="黑洞照片">
+      <button class="search_btn"><i class="fa fa-search"></i></button>
+    </div>
+    <div class="link_info fr">
+      <a href="#"><i class="fa fa-angle-right"></i>&nbsp;&nbsp;网站地图</a><br>
+      <a href="#"><i class="fa fa-angle-right"></i>&nbsp;&nbsp;招聘信息</a>
+    </div>
+  </div>
+
+  <div class="menu_con">
+    <div class="menu">
+      <div class="menu_collapse fl">
+        <a href="javascript:;" class="level_one"><i class="fa fa-list-ul"></i>全部分类</a>
+        <ul class="level_two tool_bar">
+          <li class="up"></li>
+        </ul>
+      </div>
+      <ul class="left_menu fl menu_list">
+      </ul>
+      <ul class="right_menu fr">
+        <li><a href="#">科技专题</a></li>
+        <li><a href="#">财经专题</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="main_con clearfix">
+    <div class="left_con setfr">
+
+      <div class="list_title">
+        <h3 class="list_title_name">科 技</h3>
+      </div>
+
+      <div id="focus_type_comment_list">
+
+      </div>
+
+
+      <div id="pagination" class="page"></div>
+
+    </div>
+    <div class="right_con setfl">
+      <div class="common_wrap">
+        <h3><i class="fa fa-bar-chart"></i> 一周热门排行</h3>
+        <ul class="content_list hot_list">
+          <!-- <li><span class="first">1</span><a href="#">神奇的水滴摄影，泡泡中的世界泡泡中的世界</a></li>
+          <li><span class="third">3</span><a href="#">神奇的水滴摄影，泡泡中的世界</a></li> -->
+        </ul>
+      </div>
+      <div class="common_wrap">
+        <h3><i class="fa fa-commenting-o"></i> 最新评论</h3>
+        <ul class="content_list comment_list latest_comment_list">
+
+
+        </ul>
+      </div>
+      <div class="common_wrap">
+        <h3><i class="fa fa-bullseye"></i> 焦点关注</h3>
+        <ul class="content_list guanzhu_list">
+
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer clearfix">
+    <div class="foot_link">
+      <a href="#">关于我们</a>
+      <span>|</span>
+      <a href="#">联系我们</a>
+      <span>|</span>
+      <a href="#">招聘人才</a>
+      <span>|</span>
+      <a href="#">友情链接</a>
+    </div>
+    <p>CopyRight © 2019 深圳大事件信息技术股份有限公司 All Rights Reserved</p>
+    <p>电话：0755-****888 粤ICP备*******8号</p>
+  </div>
+  <script src="./js/jquery-1.12.4.min.js"></script>
+  <script src="./js/app.js"></script>
+  <!-- 导包template -->
+  <script src="./js/template-web.js"></script>
+  <script src="./admin/libs/layui/layui.js"></script>
+
+  <!-- 导航菜单1渲染模板 -->
+  <script id="tool_bar_temp" type="text/html">
+    {{each data}}
+    <li><a href="./bigEventList.html?type={{$value.id}}">{{$value.name}}</a></li>
+    {{/each}}
+
+  </script>
+  <!-- 导航菜单2渲染模板 -->
+  <script id="menu_list_temp" type="text/html">
+    {{each data}}
+    <li><a href="./bigEventList.html?type={{$value.id}}">{{$value.name}}</a></li>
+    {{/each}}
+
+  </script>
+  <!-- 主新闻列表渲染模板 -->
+  <script id="lates_news_temp" type="text/html">
+    {{each data}}
+    <div class="common_news_list">
+      <a href="#" class="list_pic"><img src="{{$value.cover}}" alt=""></a>
+      <h4><a href="./bigEventArticle.html?id={{$value.id}}">{{$value.title}} </a></h4>
+      <p>{{@ $value.content}}
+      </p>
+      <div class="new_info">
+        <span>标签：{{$value.category}}&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;<i
+            class="fa fa-eye"></i>&nbsp;阅读({{$value.read}}
+          )&nbsp;&nbsp;&nbsp;<i class="fa fa-commenting"></i>&nbsp;评论( {{$value.comments}} )</span>
+        <b>发布于 {{$value.date}}</b>
+      </div>
+    </div>
+    {{/each}}
+
+  </script>
+  <!-- 热门文章渲染模板 -->
+  <script id="hot_rank_temp" type="text/html">
+    {{each  data}}
+    <!-- <li><i>{{$index +1}}</i><a href="javascript:;"><span>{{$value.title}}</span></a></li> -->
+    <li><span class="first">{{$index +1}}</span><a href="#">{{$value.title}}</a></li>
+    {{/each}}
+
+  </script>
+  <!-- 最新评论渲染模板 -->
+  <script id="latest_comment_temp" type="text/html">
+    {{each data}}
+    <!-- <li><i>{{$value.tip}}</i>
+      <div class="desc"><span>{{$value.author}}</span><a href="javascript:;">{{$value.intro}}</a></div>
+    </li> -->
+
+    <li>
+      <span>{{$value.tip}}</span>
+      <b><em>{{$value.author}}</em> {{$value.date}}　说:</b>
+      <strong>{{$value.intro}}</strong>
+    </li>
+    {{/each}}
+
+  </script>
+  <!-- 焦点关注渲染模板 -->
+  <script id="focus_temp" type="text/html">
+    {{each data}}
+
+    <li><a href="#">{{$value.intro}}</a></li>
+    {{/each}}
+
+  </script>
+
+  <script>
+    $(function () {
+      get_article_catelist();
+      get_focus_type_article_list();
+      get_hot_rank();
+      get_lates_comments();
+      get_focus();
+      pagination_init()
+
+    })
+
+    //需求1.当页面加载的时候，获取文章类型，并渲然到页面上
+    function get_article_catelist() {
+      get_datas('GET', '/index/category', {}, function (resData) {
+        console.log(resData);
+        if (resData.code !== 200) return alert(resData.msg);
+        //调用模板，渲染数据1
+        let toolBarHtml = template('tool_bar_temp', resData);
+        $('.tool_bar').append(toolBarHtml)
+        //调用模板，渲染数据2
+        let menuListHtml = template('menu_list_temp', resData);
+        $('.menu_list').html(toolBarHtml)
+        //获取到所有文章类型以后，判断location.href中传过来的id,找到对应的文章类型的名称，渲染在文章的标题上
+        let category_id = location.href.split('=')[1];
+        console.log(category_id);
+        //获取到id以后，循环遍历返回来的数组，找到对应的类型名称
+        let category_title = '';
+        resData.data.forEach(item => {
+          if (item.id == category_id) {
+            category_title = item.name;
+          }
+        })
+        console.log(category_title);
+        $('.list_title_name').html(category_title)
+      })
+    }
+
+    //需求3.获取文章热门排行，并渲染至页面上
+    function get_hot_rank() {
+      get_datas('GET', '/index/rank', {}, function (resData) {
+
+        let hotRankTempHtml = template('hot_rank_temp', resData);
+        $('.hot_list').html(hotRankTempHtml)
+      })
+    }
+    //需求4.获取最新评论，渲染到页面中的最新评论
+    function get_lates_comments() {
+      get_datas('GET', '/index/latest_comment', {}, function (resData) {
+        // console.log(resData);
+        let htmlData = resData;
+        htmlData.data.forEach(item => {
+          item.tip = item.author.substr(0, 1);
+          // console.log(item.tip);
+        });
+        // console.log(htmlData);
+        let latestCommentHtml = template('latest_comment_temp', htmlData)
+        $('.latest_comment_list').html(latestCommentHtml)
+      })
+    }
+    //需求5.获取焦点关注，渲染到页面中
+    function get_focus() {
+      get_datas('GET', '/index/attention', {}, function (resData) {
+        // console.log(resData);
+        let focusHtml = template('focus_temp', resData)
+        $('.guanzhu_list').html(focusHtml)
+      })
+    }
+    //需求2.当页面加载时候，根据url路径中传过来的id值，获取到指定类型的文章列表，并且展示在页面上
+    function get_focus_type_article_list(current = 1, limit = 10) {
+      let c_id = location.href.split('=')[1];
+      console.log(c_id);
+      get_datas('GET', '/index/search', {
+        type: c_id,
+        page: current,
+        perpage: limit,
+      }, function (resData) {
+        // console.log(resData);
+        //调用模板渲染至页面上
+        let resHtml = template('lates_news_temp', resData.data);
+        $('#focus_type_comment_list').html(resHtml);
+        pagination_init(resData.data.totalCount, current)
+      })
+    }
+    //需求6.初始化分页器
+    function pagination_init(totalCount, current) {
+      layui.use('laypage', function () {
+        var laypage = layui.laypage;
+
+        //执行一个laypage实例
+        laypage.render({
+          elem: 'pagination', //注意，这里的 test1 是 ID，不用加 # 号
+          curr: current,
+          limit: 10,
+          count: totalCount, //数据总数，从服务端得到
+          jump: function (obj, first) {
+            //obj包含了当前分页的所有参数，比如：
+            console.log(obj.curr); //得到当前页，以便向服务端请求对应页的数据。
+            console.log(obj.limit); //得到每页显示的条数
+
+            //首次不执行
+            if (!first) {
+              //do something
+              get_focus_type_article_list(obj.curr, obj.limit)
+            }
+          }
+        });
+      });
+
+    }
+
+  </script>
+</body>
+
+</html>

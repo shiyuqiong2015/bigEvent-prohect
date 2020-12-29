@@ -17,7 +17,7 @@
     <div class="sider">
         <a href="#" class="logo"><img src="./images/logo02.png" alt="logo"></a>
         <div class="user_info">
-            <img src="http://localhost:8080/icon.jpg" alt="person" id='userImg'>
+            <img src="http://localhost:8080/icon.jpg" alt="person" id='userImg' class="userImg">
             <span>欢迎&nbsp;&nbsp; <i id="userName">李思思</i> </span>
             <b>管理员</b>
         </div>
@@ -49,8 +49,9 @@
         <div class="header_bar">
             <div class="user_center_link">
                 <a href="./user.html">个人中心</a>
-                <img src="http://localhost:8080/icon.jpg" alt="person">
-                <a href="javascript:void(0)" class="logout"><i class="iconfont icon-tuichu"></i> 退出</a>
+                <img src="http://localhost:8080/icon.jpg" alt="person" class="userImg">
+                <a href="javascript:void(0)" class="logout" onclick="login_out()"><i class="iconfont icon-tuichu"></i>
+                    退出</a>
             </div>
         </div>
         <!-- 右侧主体内容 -->
@@ -100,12 +101,22 @@
                 let resString = xhr.responseText;
                 let resData = JSON.parse(resString);
                 // console.log(resData);
+                if (resData.code == 403) {
+                    window.parent.location = ' ./login.html';
+                    return;
+                }
                 //将获取到的数据展示在页面上
-                $('#userImg').attr('src', resData.data.userPic);
+                $('.userImg').attr('src', resData.data.userPic);
                 $('#userName').html(resData.data.nickname);
 
 
             }
+        }
+
+        //需求3.实现系统的退出功能：点击退出的时候，清除本地存储中的token,并且跳转至登录页面
+        function login_out() {
+            localStorage.removeItem('bigEvent_token')
+            window.location = './login.html'
         }
 
     </script>

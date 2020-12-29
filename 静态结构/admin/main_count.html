@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="css/reset.css">
     <link rel="stylesheet" href="css/iconfont.css">
     <link rel="stylesheet" href="css/main.css">
-    <script src="./libs/jquery-1.12.4.min.js"></script>
+    <script src="./libs/jquery/jquery.min.js"></script>
     <script type="text/javascript" src="./libs/echarts.js"></script>
 </head>
 
@@ -19,25 +19,25 @@
         <div class="row spannel_list">
             <div class="col-sm-3 col-xs-6">
                 <div class="spannel">
-                    <em>10015</em><span>篇</span>
+                    <em class="totalArticle">10015</em><span>篇</span>
                     <b>总文章数</b>
                 </div>
             </div>
             <div class="col-sm-3 col-xs-6">
                 <div class="spannel scolor01">
-                    <em>123</em><span>篇</span>
+                    <em class="dayArticle">123</em><span>篇</span>
                     <b>日新增文章数</b>
                 </div>
             </div>
             <div class="col-sm-3 col-xs-6">
                 <div class="spannel scolor02">
-                    <em>35</em><span>条</span>
+                    <em class="totalComment">35</em><span>条</span>
                     <b>评论总数</b>
                 </div>
             </div>
             <div class="col-sm-3 col-xs-6">
                 <div class="spannel scolor03">
-                    <em>123</em><span>条</span>
+                    <em class="dayComment">123</em><span>条</span>
                     <b>日新增评论数</b>
                 </div>
             </div>
@@ -58,6 +58,277 @@
     <div class="container-fluid">
         <div class="column_pannel" id="column_show"></div>
     </div>
+    <script>
+        $(function () {
+            // console.log(111);
+            // curve_show();
+            get_article_comment_counts();
+            get_curve_show_data();
+            // pie_show();
+            get_pie_show_data();
+            // column_show()
+            get_column_show()
+        })
+
+        //需求1.绘制日新增文章趋势折线图
+        function curve_show(xArr, realData) {
+
+            //引入echarts，初始化
+            var myChart = echarts.init(document.getElementById('curve_show'));
+
+            // 指定图表的配置项和数据
+            var option = {
+                title: {
+                    text: '日新增文章趋势',
+                    left: 'center',
+                    top: '10px',
+                },
+                tooltip: {
+                    trigger: 'axis',
+                    axisPointer: {
+                        type: 'cross',
+                        label: {
+                            backgroundColor: '#6a7985'
+                        }
+                    }
+                },
+                xAxis: {
+                    type: 'category',
+                    boundaryGap: false,
+                    data: xArr, //['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+                },
+                yAxis: {
+                    type: 'value'
+                },
+                series: [{
+                    data: realData, //[820, 932, 901, 934, 1290, 1330, 1320],
+                    type: 'line',
+                    smooth: true,
+                    itemStyle: {},
+                    label: {
+                        normal: {
+                            show: true,
+                            position: 'top'
+                        }
+                    },
+                    areaStyle: {
+                        color: new echarts.graphic.LinearGradient(
+                            0, 0, 0, 1,
+                            [{
+                                    offset: 0,
+                                    color: '#f00'
+                                },
+
+                                {
+                                    offset: 1,
+                                    color: '#fff'
+                                }
+                            ]
+                        )
+                    }
+                }]
+            };
+
+
+            // 使用刚指定的配置项和数据显示图表。
+            myChart.setOption(option);
+        }
+        //需求2.请求后台服务器接口，获取日新增折线图的X轴数据和实际的折线图数据
+        function get_curve_show_data() {
+            //创建异步对象
+            let xhr = new XMLHttpRequest();
+            //设置请求方式和请求路径
+            xhr.open('GET', 'http://localhost:8080/api/v1/admin/data/article');
+            //要求带上token
+            xhr.setRequestHeader('Authorization', localStorage.getItem('bigEvent_token'))
+            //发送请求
+            xhr.send();
+            //接收并响应返回来的数据
+            xhr.onload = function () {
+                let resString = xhr.responseText;
+                let resData = JSON.parse(resString);
+                // console.log(resData);
+                //请求数据回来以后，将返回来的数据分割成两个数组
+                let xArr = [],
+                    realData = [];
+                resData.date.forEach(item => {
+                    xArr.push(item.date);
+                    realData.push(item.count);
+                    //调用绘制日新增文章图表，并传参
+                    curve_show(xArr, realData)
+                });
+            }
+
+        }
+        //需求3.获取到关于文章和评论的4个数据，并且更新在页面上
+        function get_article_comment_counts() {
+            //创建异步对象
+            let xhr = new XMLHttpRequest();
+            //设置请求方式和路径
+            xhr.open('GET', 'http://localhost:8080/api/v1/admin/data/info');
+            //设置请求头
+            xhr.setRequestHeader('Authorization', localStorage.getItem('bigEvent_token'));
+            //发送请求
+            xhr.send();
+            //接收并响应返回来的数据
+            xhr.onload = function () {
+                let resString = xhr.responseText;
+                let resData = JSON.parse(resString);
+                // console.log(resData);
+                //将请求回来的数据更新在页面上
+                $('.totalArticle').html(resData.totalArticle)
+                $('.dayArticle').html(resData.dayArticle)
+                $('.totalComment').html(resData.totalComment)
+                $('.dayComment').html(resData.dayComment)
+            }
+
+        }
+        //需求4.绘制文章分类的饼状图
+        function pie_show(pieNames, pieDatas) {
+            // 基于准备好的dom，初始化echarts实例
+            var myChart = echarts.init(document.getElementById('pie_show'));
+
+            // 指定图表的配置项和数据
+            var option = {
+                tooltip: {
+                    trigger: 'item',
+                    formatter: '{a} <br/>{b}: {c} ({d}%)'
+                },
+
+                legend: {
+                    // orient: 'vertical',
+                    left: 10,
+                    data: pieNames // ['直接访问', '邮件营销', '联盟广告', '视频广告', '搜索引擎']
+                },
+                series: [{
+                    name: '访问来源',
+                    type: 'pie',
+                    radius: ['50%', '70%'],
+                    avoidLabelOverlap: false,
+                    // label: {
+                    //     show: false,
+                    //     position: 'center'
+                    // },
+                    // emphasis: {
+                    //     label: {
+                    //         show: true,
+                    //         fontSize: '30',
+                    //         fontWeight: 'bold'
+                    //     }
+                    // },
+                    // labelLine: {
+                    //     show: false
+                    // },
+                    data: pieDatas,
+                    // data: [{
+                    //         value: 335,
+                    //         name: '直接访问'
+                    //     },
+                    //     {
+                    //         value: 310,
+                    //         name: '邮件营销'
+                    //     },
+                    //     {
+                    //         value: 234,
+                    //         name: '联盟广告'
+                    //     },
+                    //     {
+                    //         value: 135,
+                    //         name: '视频广告'
+                    //     },
+                    //     {
+                    //         value: 1548,
+                    //         name: '搜索引擎'
+                    //     }
+                    // ]
+
+                }]
+            };
+
+
+            // 使用刚指定的配置项和数据显示图表。
+            myChart.setOption(option);
+        }
+        //需求5.请求后台服务器接口，获取文章分类的数据
+        function get_pie_show_data() {
+            let xhr = new XMLHttpRequest();
+            xhr.open('GET', 'http://localhost:8080/api/v1/admin/data/category');
+            xhr.setRequestHeader('Authorization', localStorage.getItem('bigEvent_token'));
+            xhr.send();
+            xhr.onload = function () {
+                let resString = xhr.responseText;
+                let resData = JSON.parse(resString);
+                // console.log(resData);
+                //拼接饼状图需要的数据格式
+                // let pieDatas = [],
+                //     pieNames = [];
+                let pieNames = resData.date.map(item => item.name);
+                let pieDatas = resData.date.map(item => ({
+                    name: item.name,
+                    value: item.articles
+                }));
+                // console.log(pieNames);
+                // console.log(pieDatas);
+                //调用绘制饼状图函数，传入参数绘制饼状图
+                pie_show(pieNames, pieDatas)
+
+
+            }
+        }
+        //需求6.绘制文章访问量柱状图
+        function column_show(dates, counts) {
+            // 基于准备好的dom，初始化echarts实例
+            var myChart = echarts.init(document.getElementById('column_show'));
+
+            // 指定图表的配置项和数据
+            var option = {
+                title: {
+                    text: '日文章访问量',
+                    left: 'center',
+                    top: 10,
+                },
+                xAxis: {
+                    type: 'category',
+                    data: dates //['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+                },
+                yAxis: {
+                    type: 'value'
+                },
+                series: [{
+                    data: counts, //[120, 200, 150, 80, 70, 110, 130],
+                    type: 'bar',
+                    barWidth: 40,
+                    itemStyle: {
+                        color: '#00a4ff',
+                    }
+                }]
+            };
+
+            // 使用刚指定的配置项和数据显示图表。
+            myChart.setOption(option);
+        }
+        //需求7.请求后台服务器接口，获取文章文章访问量柱状图数据
+        function get_column_show() {
+            let xhr = new XMLHttpRequest();
+            xhr.open('GET', 'http://localhost:8080/api/v1/admin/data/visit');
+            xhr.setRequestHeader('Authorization', localStorage.getItem('bigEvent_token'));
+            xhr.send();
+            xhr.onload = function () {
+                let resString = xhr.responseText;
+                let resData = JSON.parse(resString);
+                console.log(resData);
+                //整理数据成需要的格式
+                let dates = [],
+                    counts = [];
+                for (let key in resData.data) {
+                    dates.push(key);
+                    counts.push(resData.data[key]);
+                }
+                column_show(dates, counts)
+            }
+        }
+
+    </script>
 </body>
 
 </html>

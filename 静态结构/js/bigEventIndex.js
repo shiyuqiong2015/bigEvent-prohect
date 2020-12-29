@@ -7,7 +7,7 @@ $(function () {
   get_focus();
   $('.search_btn').click(function () {
     get_articleList_by_searchText()
-  })
+  });
 })
 //需求1.当页面加载的时候，获取文章类型，并渲然到页面上
 function get_article_catelist() {
